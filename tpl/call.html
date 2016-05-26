@@ -1,0 +1,21 @@
+<html>
+  <head>
+    <script>
+      var duration = {$duration};
+      x = null
+
+      function closeIt() {
+        x = setTimeout("self.close()", duration);
+      }
+    </script>
+  </head>
+
+  <body onload="closeIt(); self.focus()">
+
+    {if {$pos}==TRUE}
+        Extension is ringing now...<br>
+        When you answer, call to {$exten} will be placed.
+    {/if}
+  </body>
+
+</html>
