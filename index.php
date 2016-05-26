@@ -36,7 +36,6 @@ if (!empty($session)) {
     $tpl->assign("uuid", $session);
 
     for($i=0;$i<strlen($tab);$i++) {
-      $chr = substr($tab,$i,1);
 
       if(strlen($tab) == 3) {
         $w = "33%";
@@ -45,7 +44,11 @@ if (!empty($session)) {
       }
       $tpl->assign("w", $w);
 
-      $query_string="SELECT * FROM user1 where name between '$chr' AND '$chr".'zzzz'."' order by name asc";
+      $chr = str_split($tab);
+      $chr_start = $chr[0];
+      $chr_end = end($chr);
+
+      $query_string="SELECT * FROM user1 WHERE substr(name,1,1) between '$chr_start' and '$chr_end' order by name asc";
       $db->exec($query_string);
       $result = $db->query($query_string);
 
