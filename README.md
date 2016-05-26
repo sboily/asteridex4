@@ -17,8 +17,11 @@ Using asteridex4
 
 Enabled your CTI login/password to your user and connect to asteridex4 with it.
 
+This fork use the postgres database from xivo. If you want to add new entries, use the phonebook in the xivo web interface.
+
 Screenshots
 -----------
 
 ![login screenshot](/screenshots/login.png?raw=true "login")
+
 ![main screenshot](/screenshots/main.png?raw=true "main")
