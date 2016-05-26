@@ -15,6 +15,7 @@ class XiVO {
         $this->xivo_host = $xivo_host;
         $this->xivo_api_user = $xivo_api_user;
         $this->xivo_api_pwd = $xivo_api_pwd;
+        $this->xivo_backend_user = "xivo_user";
     }
 
     function _connect($port, $version, $token=NULL, $xivo_api_user=NULL, $xivo_api_pwd=NULL) {
@@ -34,7 +35,7 @@ class XiVO {
     }
 
     function xivo_login($login, $password) {
-        $info = $this->get_token($login, $password, "xivo_user");
+        $info = $this->get_token($login, $password, $this->xivo_backend_user);
         setcookie("asteridex[uuid]", $info['uuid'], time() + 3600);
 
         return $info['token'];
