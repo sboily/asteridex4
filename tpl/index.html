@@ -45,7 +45,7 @@
                         <td vAlign=top width="{$w}"><font face=verdana,sans-serif>
 
                         {foreach from=$entries item=entry}
-                          <a href="#" onClick="do_call()"
+                          <a href="#" onClick="do_call({$entry.out})"
                                    onMouseover="window.status="{$entry.out} {$entry.dialcode}'; return true"
                                    onMouseout="window.status=' '; return true">
                                    {$entry.name}
@@ -68,8 +68,8 @@
   </body>
 
   <script>
-  function do_call() {
-    window.open('./callboth.php?OUT={$entry.out}', 'Window2', 'height=250,width=550');
+  function do_call(extension) {
+    window.open('./callboth.php?OUT=extension', 'Window2', 'height=250,width=550');
   }
   </script>
 
