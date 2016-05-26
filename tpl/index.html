@@ -12,8 +12,8 @@
   <h1>{$title}</h1>
 
   <form id="setExtension" method="POST" action="index.php">
-    <label>UUID:</label>
-    {$uuid} (<a href="logout.php">logout</a>)
+    <label>User:</label>
+    {$displayname} (<a href="logout.php">logout</a>)
   </form>
 
   <div id="header">
@@ -45,7 +45,7 @@
                         <td vAlign=top width="{$w}"><font face=verdana,sans-serif>
 
                         {foreach from=$entries item=entry}
-                          <a href="javascript:void(window.open('./callboth.php?SEQ=958217&IN={$defaultLine}&OUT={$entry.out}', 'Window2', 'height=250,width=550'))"
+                          <a href="#" onClick="do_call()"
                                    onMouseover="window.status="{$entry.out} {$entry.dialcode}'; return true"
                                    onMouseout="window.status=' '; return true">
                                    {$entry.name}
@@ -66,4 +66,11 @@
       </div>
     </div>
   </body>
+
+  <script>
+  function do_call() {
+    window.open('./callboth.php?OUT={$entry.out}', 'Window2', 'height=250,width=550');
+  }
+  </script>
+
 </html>

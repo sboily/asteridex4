@@ -1,29 +1,30 @@
 <?php
 
+/*
+ Copyright (C) 2016 - Ward Mundy, Sylvain Boily
+ SPDX-License-Identifier: GPL-3.0+
+*/
+
 include_once("config/config.inc.php");
 include_once("lib/xivo.php");
 
-$IN=urlencode($_REQUEST['IN']);
-$OUT=urlencode($_REQUEST['OUT']);
-$SEQ=urlencode($_REQUEST['SEQ']);
-$OUT= $LDprefix . $OUT ;
+$xivo = new XiVO($xivo_host);
+$xivo->xivo_api_user = $xivo_api_user;
+$xivo->xivo_api_pwd = $xivo_api_pwd;
 
+$OUT=urlencode($_REQUEST['OUT']);
 $OUT = str_replace( chr(13), "", $OUT );
 $OUT = str_replace( chr(10), "", $OUT );
 $OUT = str_replace( ">", "", $OUT );
 $OUT = str_replace( "<", "", $OUT );
 
-
 $pos = false ;
 if (strlen($OUT)>100) :
  $pos=true ;
 endif ;
-if ($SEQ<>"958217") :
- $pos=true ;
-endif ;
 
 if ($pos===false) :
-    do_call($OUT, $xivo_api_user, $xivo_api_pwd);
+    $xivo->do_call($OUT, $xivo_api_user, $xivo_api_pwd);
 ?>
 
 <html>
@@ -39,8 +40,8 @@ if ($pos===false) :
   </head>
 
   <body onload="closeIt();self.focus()">
-    Extension <?php echo $IN ?>is ringing now. <br>
-    When <?php echo $IN ?>answers, call to <?php echo $OUT ?>will be placed.
+    Extension is ringing now... <br>
+    When you answer, call to <?php echo $OUT ?> will be placed.
   </body>
 </html>
 
