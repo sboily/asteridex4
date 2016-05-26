@@ -42,18 +42,20 @@
                 <table cellSpacing=1 cellPadding=8 border=0 width="100%">
                   <tbody>
                     <tr>
-                      <td vAlign=top width="{$w}">
+                      <td vAlign=top>
                         <font face=verdana,sans-serif>
 
-                        {foreach from=$entries item=entry}
-                          <a href="" onClick="do_call({$entry.out})"
-                                     onMouseover="window.status="{$entry.out} {$entry.dialcode}'; return true"
-                                     onMouseout="window.status=' '; return true">
-                                     {$entry.name}
-                                     <span>{$entry.out} {$entry.dialcode}</span>
-                          </a>
-                          <br><br>
-                        {/foreach}
+                        {if isset($entries)}
+                          {foreach from=$entries item=entry}
+                            <a href="" onClick="do_call({$entry.out})"
+                                       onMouseover="window.status="{$entry.out} {$entry.dialcode}'; return true"
+                                       onMouseout="window.status=' '; return true">
+                                       {$entry.name}
+                                       <span>{$entry.out} {$entry.dialcode}</span>
+                            </a>
+                            <br><br>
+                          {/foreach}
+                        {/if}
 
                         </font>
                       </td>

@@ -35,34 +35,28 @@ if (!empty($session)) {
     $tpl->assign("tab", $tab);
     $tpl->assign("uuid", $session);
 
-    for($i=0;$i<strlen($tab);$i++) {
+    $chr = str_split($tab);
+    $chr_start = $chr[0];
+    $chr_end = end($chr);
 
-      if(strlen($tab) == 3) {
-        $w = "33%";
-      } else {
-        $w = "25%";
-      }
-      $tpl->assign("w", $w);
+    $query_string = "select displayname, number from phonebook, phonebooknumber
+                     where phonebook.id=phonebooknumber.phonebookid and displayname
+                     between '$chr_start' and '$chr_end' order by displayname asc";
+    $result = pg_query($db, $query_string);
 
-      $chr = str_split($tab);
-      $chr_start = $chr[0];
-      $chr_end = end($chr);
+    $i = 0;
+    while ($row = pg_fetch_array($result)) {
+      $entries[$i]['out'] = $row["number"];
+      $entries[$i]['dialcode'] = "";
+      $entries[$i]['name'] = $row["displayname"];
+      $i++;
+    }
 
-      $query_string="SELECT * FROM user1 WHERE substr(name,1,1) between '$chr_start' and '$chr_end' order by name asc";
-      $db->exec($query_string);
-      $result = $db->query($query_string);
-
-      $i = 0;
-      while ($row = $result->fetchArray()) {
-        $entries[$i]['out'] = $row["out"];
-        $entries[$i]['dialcode'] = $row["dialcode"];
-        $entries[$i]['name'] = $row["name"];
-        $i++;
-      }
+    if (!empty($entries)) {
       $tpl->assign("entries", $entries);
     }
 
-    $db->close();
+    pg_close($db);
     $tpl->display("tpl/index.html");
 
 } else {
