@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<title>{$title}</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+	<style type="text/css" media="screen">@import "basic.css";</style>
+	<style type="text/css" media="screen">@import "tabs.css";</style>
+</head>
+
+<body>
+  <h1>{$title}</h1>
+
+  <form id="setExtension" method="POST" action="index.php">
+    <label>Extension/Line:</label>
+    <input type="text" name="sipID" size="21" max_size="21" value="{$defaultExt}/{$defaultLine}">
+  </form>
+
+  <div id="header">
+    <ul id="primary">
+
+    {foreach from=$alph item=tabs}
+      {if {$tabs}=={$tab} }
+        <li><span>{$tabs}</span></li>
+      {else}
+        <li><a href="index.php?tab={$tabs}">{$tabs}</a></li>
+      {/if}
+    {/foreach}
+
+    {if {$admin} == TRUE}
+      <li><a href="admin.php">Admin</a></li>
+    {/if}
+
+    </ul>
+  </div>
+
+  <div id="main">
+    <div id="contents">
+      <h2><{$sub_title}</h2>
+        <p class="note">Select the desired tab above. Then click below on the name of the person or business to call.</p>
+        <p>
+          <table cellSpacing=0 cellPadding=15 width="100%" border=0>
+            <tbody>
+              <tr width="100%">
+                <td class=dir vAlign=top align=left width="100%">
+                  <table cellSpacing=1 cellPadding=8 border=0 width="100%">
+                    <tbody>
+                      <tr>
+                        <td vAlign=top width="{$w}"><font face=verdana,sans-serif>
+
+                        {foreach from=$entries item=entry}
+                          <a href="javascript:void(window.open('./callboth.php?SEQ=958217&IN={$defaultLine}&OUT={$entry.out}', 'Window2', 'height=250,width=550'))"
+                                   onMouseover="window.status="{$entry.out} {$entry.dialcode}'; return true"
+                                   onMouseout="window.status=' '; return true">
+                                   {$entry.name}
+                                   <span>{$entry.out} {$entry.dialcode}</span>
+                          </a>
+                          <br><br>
+                        {/foreach}
+
+                        </font></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+              </td>
+            </tbody>
+          </table>
+        </p>
+      </div>
+    </div>
+  </body>
+</html>
