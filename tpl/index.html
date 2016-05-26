@@ -12,8 +12,8 @@
   <h1>{$title}</h1>
 
   <form id="setExtension" method="POST" action="index.php">
-    <label>Extension/Line:</label>
-    <input type="text" name="sipID" size="21" max_size="21" value="{$defaultExt}/{$defaultLine}">
+    <label>UUID:</label>
+    {$uuid} (<a href="logout.php">logout</a>)
   </form>
 
   <div id="header">
