@@ -33,39 +33,41 @@
   <div id="main">
     <div id="contents">
       <h2><{$sub_title}</h2>
-        <p class="note">Select the desired tab above. Then click below on the name of the person or business to call.</p>
-        <p>
-          <table cellSpacing=0 cellPadding=15 width="100%" border=0>
-            <tbody>
-              <tr width="100%">
-                <td class=dir vAlign=top align=left width="100%">
-                  <table cellSpacing=1 cellPadding=8 border=0 width="100%">
-                    <tbody>
-                      <tr>
-                        <td vAlign=top width="{$w}"><font face=verdana,sans-serif>
+      <p class="note">Select the desired tab above. Then click below on the name of the person or business to call.</p>
+      <p>
+        <table cellSpacing=0 cellPadding=15 width="100%" border=0>
+          <tbody>
+            <tr width="100%">
+              <td class=dir vAlign=top align=left width="100%">
+                <table cellSpacing=1 cellPadding=8 border=0 width="100%">
+                  <tbody>
+                    <tr>
+                      <td vAlign=top width="{$w}">
+                        <font face=verdana,sans-serif>
 
                         {foreach from=$entries item=entry}
-                          <a href="#" onClick="do_call({$entry.out})"
-                                   onMouseover="window.status="{$entry.out} {$entry.dialcode}'; return true"
-                                   onMouseout="window.status=' '; return true">
-                                   {$entry.name}
-                                   <span>{$entry.out} {$entry.dialcode}</span>
+                          <a href="" onClick="do_call({$entry.out})"
+                                     onMouseover="window.status="{$entry.out} {$entry.dialcode}'; return true"
+                                     onMouseout="window.status=' '; return true">
+                                     {$entry.name}
+                                     <span>{$entry.out} {$entry.dialcode}</span>
                           </a>
                           <br><br>
                         {/foreach}
 
-                        </font></td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </td>
+                        </font>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </td>
-            </tbody>
-          </table>
-        </p>
-      </div>
+            </tr>
+          </tbody>
+        </table>
+      </p>
     </div>
-  </body>
+  </div>
+</body>
 
   <script>
   function do_call(extension) {
