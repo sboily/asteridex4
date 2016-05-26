@@ -32,6 +32,29 @@ This fork use the postgres database from xivo. If you want to add new entries, u
 
 Open your browser to https://xivo_ip/asteridex4/
 
+Docker
+------
+
+You can use docker
+
+    docker build -t asteridex4 .
+    docker run -p 80:80 -t asteridex4
+
+It's possible to import all of this variable
+
+- XIVO_HOST
+- XIVO_HOST_DB
+- XIVO_API_USER
+- XIVO_API_PWD
+- XIVO_BACKEND_USER
+
+    docker run -p 80:80 -e XIVO_HOST=192.168.1.124 \
+                        -e XIVO_HOST_DB=192.168.1.124 \
+                        -e XIVO_API_USER=sylvain \
+                        -e XIVO_API_PWD=sylvain \
+                        -e XIVO_BACKEND_USER=xivo_user \
+                        -t asteridex4
+
 Screenshots
 -----------
 
