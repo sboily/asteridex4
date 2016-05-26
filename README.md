@@ -30,6 +30,8 @@ Enabled your CTI login/password to your user and connect to asteridex4 with it.
 
 This fork use the postgres database from xivo. If you want to add new entries, use the phonebook in the xivo web interface.
 
+Open your browser to https://xivo_ip/asteridex4/
+
 Screenshots
 -----------
 
