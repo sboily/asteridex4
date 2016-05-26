@@ -27,10 +27,6 @@ if (!empty($session)) {
     $tpl->assign("tab", $tab);
     $tpl->assign("uuid", $session);
 
-    if (file_exists("admin")) {
-      $tpl->assign("admin", TRUE);
-    }
-
     for($i=0;$i<strlen($tab);$i++) {
       $chr = substr($tab,$i,1);
 
