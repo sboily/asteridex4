@@ -16,3 +16,9 @@ Using asteridex4
 ----------------
 
 Enabled your CTI login/password to your user and connect to asteridex4 with it.
+
+Screenshots
+-----------
+
+![login screenshot](/screenshots/login.png?raw=true "login")
+![main screenshot](/screenshots/main.png?raw=true "main")
