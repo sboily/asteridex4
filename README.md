@@ -11,3 +11,8 @@ You need to add a webservice user with this ACLs :
 - ctid-ng.#
 
 And configure the config.inc.php.
+
+Using asteridex4
+----------------
+
+Enabled your CTI login/password to your user and connect to asteridex4 with it.
