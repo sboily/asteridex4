@@ -40,7 +40,7 @@ if (!empty($session)) {
     $chr_end = end($chr);
 
     $query_string = "select displayname, number from phonebook, phonebooknumber
-                     where phonebook.id=phonebooknumber.phonebookid and displayname
+                     where phonebook.id=phonebooknumber.phonebookid and substr(displayname,1,1)
                      between '$chr_start' and '$chr_end' order by displayname asc";
     $result = pg_query($db, $query_string);
 
