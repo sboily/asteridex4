@@ -167,6 +167,11 @@ class XiVO {
         $connect = $this->_connect(9489, "0.1", $this->xivo_session);
         $personal = $connect->post("personal", $contact, ['Content-Type' => 'application/json']);
     }
+
+    public function delete_personal($id) {
+        $connect = $this->_connect(9489, "0.1", $this->xivo_session);
+        $connect->delete("personal/$id");
+    }
 }
 
 function get_phonebook($db, $tab) {
@@ -196,6 +201,7 @@ function get_personal($xivo) {
     for ($i = 0; $i < count($row); $i++) {
         $entries[$i]['displayname'] = $row[$i]->firstname." ".$row[$i]->lastname;
         $entries[$i]['number'] = $row[$i]->number;
+        $entries[$i]['id'] = $row[$i]->id;
     }
 
     return $entries;

@@ -17,11 +17,15 @@
                 {if isset($entries)}
                   {foreach from=$entries item=entry}
                     <a href="" onClick="do_call({$entry.number})"
-                               onMouseover="window.status="{$entry.number} {$entry.dialcode}'; return true"
+                               onMouseover="window.status='{$entry.number} {$entry.dialcode}'; return true"
                                onMouseout="window.status=' '; return true">
                                {$entry.displayname}
                                <span>{$entry.number} {$entry.dialcode}</span>
                     </a>
+                    {if isset($personal)}
+                      &nbsp;
+                      <a href="index.php?tab=personal&action=delete&contactid={$entry.id}">(delete)</a>
+                    {if}
                     <br><br>
                   {/foreach}
                 {/if}

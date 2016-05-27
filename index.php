@@ -40,6 +40,12 @@ if (!empty($session)) {
         case 'logout':
             $xivo->xivo_logout();
             break;
+        case 'delete':
+                $id = $_GET['contactid'];
+                if (!empty($id)) {
+                    $xivo->delete_personal($id);
+                }
+            break;
     }
 
     switch($tab) {
@@ -49,6 +55,7 @@ if (!empty($session)) {
             }
             $entries = get_personal($xivo);
             $tpl->assign("entries", $entries);
+            $tpl->assign("personal", true);
             $tpl->display("tpl/add_contacts.html");
             break;
 
