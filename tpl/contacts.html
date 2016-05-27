@@ -1,0 +1,40 @@
+{extends file="tpl/layout.html"}
+{block name=result}
+<table cellSpacing=0 cellPadding=15 width="100%" border=0>
+  <tbody>
+    <tr width="100%">
+      <td class=dir vAlign=top align=left width="100%">
+        <table cellSpacing=1 cellPadding=8 border=0 width="100%">
+          <tbody>
+            <tr>
+              <td vAlign=top>
+                <font face=verdana,sans-serif>
+
+                {if isset($entries)}
+                  {foreach from=$entries item=entry}
+                    <a href="" onClick="do_call({$entry.number})"
+                               onMouseover="window.status="{$entry.number} {$entry.dialcode}'; return true"
+                               onMouseout="window.status=' '; return true">
+                               {$entry.displayname}
+                               <span>{$entry.number} {$entry.dialcode}</span>
+                    </a>
+                    <br><br>
+                  {/foreach}
+                {/if}
+
+                </font>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </td>
+    </tr>
+  </tbody>
+</table>
+{/block}
+
+{block name=js_script}
+function do_call(extension) {
+    window.open('./callboth.php?OUT='+ extension, 'Window2', 'height=250,width=550');
+}
+{/block}

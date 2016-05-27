@@ -36,29 +36,21 @@ if (!empty($session)) {
     $tpl->assign("tab", $tab);
     $tpl->assign("uuid", $session);
 
-    $chr = str_split($tab);
-    $chr_start = $chr[0];
-    $chr_end = end($chr);
+    switch($tab) {
 
-    $query_string = "select displayname, number from phonebook, phonebooknumber
-                     where phonebook.id=phonebooknumber.phonebookid and substr(displayname,1,1)
-                     between '$chr_start' and '$chr_end' order by displayname asc";
-    $result = pg_query($db, $query_string);
+    case 'personal':
+        $entries = get_personal($xivo);
+        $tpl->assign("entries", $entries);
+        $tpl->display("tpl/contacts.html");
+        break;
 
-    $i = 0;
-    while ($row = pg_fetch_array($result)) {
-      $entries[$i]['out'] = $row["number"];
-      $entries[$i]['dialcode'] = "";
-      $entries[$i]['name'] = $row["displayname"];
-      $i++;
+    default:
+        $entries = get_phonebook($db, $tab);
+        if (!empty($entries)) {
+          $tpl->assign("entries", $entries);
+        }
+        $tpl->display("tpl/contacts.html");
     }
-
-    if (!empty($entries)) {
-      $tpl->assign("entries", $entries);
-    }
-
-    pg_close($db);
-    $tpl->display("tpl/index.html");
 
 } else {
 

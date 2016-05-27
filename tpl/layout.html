@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<title>{$title}</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+	<style type="text/css" media="screen">@import "css/basic.css";</style>
+	<style type="text/css" media="screen">@import "css/tabs.css";</style>
+</head>
+
+<body>
+  <h1>{$title}</h1>
+
+  <form id="setExtension" method="POST" action="index.php">
+    <label>User:</label>
+    {$displayname} (<a href="logout.php">logout</a>)
+  </form>
+
+  <div id="header">
+    <ul id="primary">
+
+    {foreach from=$alph item=tabs}
+      {if {$tabs}=={$tab} }
+        <li><span>{$tabs}</span></li>
+      {else}
+        <li><a href="index.php?tab={$tabs}">{$tabs}</a></li>
+      {/if}
+    {/foreach}
+    {if {$tab}=="personal" }
+      <li><span>PERSONAL</span></li>
+    {else}
+      <li><a href="index.php?tab=personal">PERSONAL</a></li>
+    {/if}
+
+    </ul>
+  </div>
+
+  <div id="main">
+    <div id="contents">
+      <h2><{$sub_title}</h2>
+      <p class="note">Select the desired tab above. Then click below on the name of the person or business to call.</p>
+      <p>
+        {block name=result}There is no result!{/block}
+      </p>
+    </div>
+  </div>
+
+</body>
+
+  <script>
+    {block name=js_script}{/block}
+  </script>
+
+</html>

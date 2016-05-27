@@ -133,6 +133,51 @@ class XiVO {
         return FALSE;
     }
 
+    function get_personal() {
+        $connect = $this->_connect(9489, "0.1", $_COOKIE['asteridex']['session']);
+        $personal = $connect->get("personal");
+
+        $result = json_decode($personal->response);
+
+        $contacts = array();
+        if ($personal->info->http_code == 200) {
+            return $result->items;
+        }
+
+        return FALSE;
+    }
+}
+
+function get_phonebook($db, $tab) {
+    $chr = str_split($tab);
+    $chr_start = $chr[0];
+    $chr_end = end($chr);
+
+    $query_string = "select displayname, number from phonebook, phonebooknumber
+                     where phonebook.id=phonebooknumber.phonebookid and substr(displayname,1,1)
+                     between '$chr_start' and '$chr_end' order by displayname asc";
+    $result = pg_query($db, $query_string);
+
+    $i = 0;
+    while ($row = pg_fetch_array($result)) {
+      $entries[$i]['number'] = $row["number"];
+      $entries[$i]['dialcode'] = "";
+      $entries[$i]['displayname'] = $row["displayname"];
+      $i++;
+    }
+
+    pg_close($db);
+    return $entries;
+}
+
+function get_personal($xivo) {
+    $row = $xivo->get_personal();
+    for ($i = 0; $i < count($row); $i++) {
+        $entries[$i]['displayname'] = $row[$i]->firstname." ".$row[$i]->lastname;
+        $entries[$i]['number'] = $row[$i]->number;
+    }
+
+    return $entries;
 }
 
 ?>
