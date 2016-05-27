@@ -18,7 +18,7 @@ class XiVO {
         $this->xivo_backend_user = "xivo_user";
     }
 
-    function _connect($port, $version, $token=NULL, $xivo_api_user=NULL, $xivo_api_pwd=NULL) {
+    private function _connect($port, $version, $token=NULL, $xivo_api_user=NULL, $xivo_api_pwd=NULL) {
         $connect = new RestClient([
             'base_url' => "https://".$this->xivo_host.":".$port."/".$version,
             'headers' => ['X-Auth-Token' => $token],
@@ -34,46 +34,10 @@ class XiVO {
         return $connect;
     }
 
-    function xivo_login($login, $password) {
-        $info = $this->get_token($login, $password, $this->xivo_backend_user);
-        setcookie("asteridex[uuid]", $info['uuid'], time() + 3600);
-
-        return $info['token'];
-    }
-
-    function xivo_logout() {
-        $token = $_COOKIE['asteridex']['session'];
-
-        $connect = $this->_connect(9497, "0.1");
-        $connect->delete("token/$token");
-
-        unset($_COOKIE['asteridex']['session']);
-        setcookie("asteridex[session]", "", time() - 3600);
-        setcookie("asteridex[uuid]", "", time() - 3600);
-
-        header('Location: index.php');
-    }
-
-    function get_displayname() {
-
-        $connect = $this->_connect(9486, "1.1", $_COOKIE['asteridex']['session']);
-        $user = $connect->get("users/".$_COOKIE['asteridex']['uuid']);
-
-        if ($user->info->http_code == 200) {
-            $info['firstname'] = json_decode($user->response)->firstname;
-            $info['lastname'] = json_decode($user->response)->lastname;
-
-            $displayname = $info['firstname']." ".$info['lastname'];
-            return $displayname;
-        }
-
-        return "Error to get displayname";
-    }
-
-    function _get_context() {
+    private function _get_context() {
         $line_id = $this->_get_line();
 
-        $info = $this->get_token($this->xivo_api_user, $this->xivo_api_pwd, "xivo_service");
+        $info = $this->_get_token($this->xivo_api_user, $this->xivo_api_pwd, "xivo_service");
         $connect = $this->_connect(9486, "1.1", $info['token']);
         $line = $connect->get("lines/".$line_id);
 
@@ -84,7 +48,7 @@ class XiVO {
         return FALSE;
     }
 
-    function _get_line() {
+    private function _get_line() {
         $connect = $this->_connect(9486, "1.1", $_COOKIE['asteridex']['session']);
         $lines = $connect->get("users/".$_COOKIE['asteridex']['uuid']."/lines");
 
@@ -101,21 +65,7 @@ class XiVO {
         return FALSE;
     }
 
-    function do_call($extension, $xivo_api_user, $xivo_api_pwd) {
-
-        $info = $this->get_token($xivo_api_user, $xivo_api_pwd, "xivo_service");
-        $user = $_COOKIE['asteridex']['uuid'];
-
-        $call = json_encode(['destination' => ['extension' => $extension,
-                                               'context' => $this->_get_context(),
-                                               'priority' => 0],
-                             'source' => ['user' => $user]]);
-
-        $connect = $this->_connect(9500, "1.0", $info['token']);
-        $connect->post("calls", $call, ['Content-Type' => 'application/json']);
-    }
-
-    function get_token($xivo_api_user, $xivo_api_pwd, $backend) {
+    private function _get_token($xivo_api_user, $xivo_api_pwd, $backend) {
         $auth_info = json_encode(['backend' => $backend,
                                   'expiration' => 3600
                                  ]);
@@ -133,7 +83,56 @@ class XiVO {
         return FALSE;
     }
 
-    function get_personal() {
+    public function xivo_login($login, $password) {
+        $info = $this->_get_token($login, $password, $this->xivo_backend_user);
+        setcookie("asteridex[uuid]", $info['uuid'], time() + 3600);
+
+        return $info['token'];
+    }
+
+    public function xivo_logout() {
+        $token = $_COOKIE['asteridex']['session'];
+
+        $connect = $this->_connect(9497, "0.1");
+        $connect->delete("token/$token");
+
+        unset($_COOKIE['asteridex']['session']);
+        setcookie("asteridex[session]", "", time() - 3600);
+        setcookie("asteridex[uuid]", "", time() - 3600);
+
+        header('Location: index.php');
+    }
+
+    public function get_displayname() {
+
+        $connect = $this->_connect(9486, "1.1", $_COOKIE['asteridex']['session']);
+        $user = $connect->get("users/".$_COOKIE['asteridex']['uuid']);
+
+        if ($user->info->http_code == 200) {
+            $info['firstname'] = json_decode($user->response)->firstname;
+            $info['lastname'] = json_decode($user->response)->lastname;
+
+            $displayname = $info['firstname']." ".$info['lastname'];
+            return $displayname;
+        }
+
+        return "Error to get displayname";
+    }
+
+    public function do_call($extension) {
+
+        $user = $_COOKIE['asteridex']['uuid'];
+
+        $call = json_encode(['destination' => ['extension' => $extension,
+                                               'context' => $this->_get_context(),
+                                               'priority' => 0],
+                             'source' => ['user' => $user]]);
+
+        $connect = $this->_connect(9500, "1.0", $_COOKIE['asteridex']['session']);
+        $connect->post("calls", $call, ['Content-Type' => 'application/json']);
+    }
+
+    public function get_personal() {
         $connect = $this->_connect(9489, "0.1", $_COOKIE['asteridex']['session']);
         $personal = $connect->get("personal");
 
@@ -145,6 +144,16 @@ class XiVO {
         }
 
         return FALSE;
+    }
+
+    public function add_personal($contact) {
+        $contact = json_encode(['firstname' => $contact['firstname'],
+                                'lastname' => $contact['lastname'],
+                                'number' => $contact['number']
+                               ]);
+
+        $connect = $this->_connect(9489, "0.1", $_COOKIE['asteridex']['session']);
+        $personal = $connect->post("personal", $contact, ['Content-Type' => 'application/json']);
     }
 }
 

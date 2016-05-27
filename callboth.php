@@ -15,23 +15,23 @@ $xivo = new XiVO($xivo_host);
 $xivo->xivo_api_user = $xivo_api_user;
 $xivo->xivo_api_pwd = $xivo_api_pwd;
 
-$OUT=urlencode($_REQUEST['OUT']);
-$OUT = str_replace( chr(13), "", $OUT );
-$OUT = str_replace( chr(10), "", $OUT );
-$OUT = str_replace( ">", "", $OUT );
-$OUT = str_replace( "<", "", $OUT );
+$exten = urlencode($_REQUEST['OUT']);
+$exten = str_replace( chr(13), "", $exten );
+$exten = str_replace( chr(10), "", $exten );
+$exten = str_replace( ">", "", $exten );
+$exten = str_replace( "<", "", $exten );
 
 $pos = false ;
-if (strlen($OUT)>100) :
+if (strlen($exten)>100) :
  $pos=true ;
 endif ;
 
 if ($pos===false) {
     $tpl->assign("duration", 4000);
-    $tpl->assign("exten", $OUT);
+    $tpl->assign("exten", $exten);
     $tpl->assign("pos", TRUE);
 
-    $xivo->do_call($OUT, $xivo_api_user, $xivo_api_pwd);
+    $xivo->do_call($exten);
 } else {
     $tpl->assign("duration", 1000);
     $tpl->assign("pos", FALSE);
