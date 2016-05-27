@@ -22,7 +22,7 @@ class XiVO {
 
     private function _connect($port, $version, $token=NULL, $xivo_api_user=NULL, $xivo_api_pwd=NULL) {
         $connect = new RestClient([
-            'base_url' => "https://".$this->xivo_host.":".$port."/".$version,
+            'base_url' => "https://$this->xivo_host:$port/$version",
             'headers' => ['X-Auth-Token' => $token],
             'curl_options' => [CURLOPT_SSL_VERIFYPEER => FALSE,
                                CURLOPT_SSL_VERIFYHOST => FALSE,
@@ -41,7 +41,7 @@ class XiVO {
 
         $info = $this->_get_token($this->xivo_api_user, $this->xivo_api_pwd, "xivo_service");
         $connect = $this->_connect(9486, "1.1", $info['token']);
-        $line = $connect->get("lines/".$line_id);
+        $line = $connect->get("lines/$line_id");
 
         if ($line->info->http_code == 200) {
             return json_decode($line->response)->context;
