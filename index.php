@@ -37,20 +37,26 @@ if (!empty($session)) {
     $tpl->assign("uuid", $session);
 
     switch($tab) {
+        case 'personal':
+            $entries = get_personal($xivo);
+            $tpl->assign("entries", $entries);
+            $tpl->display("tpl/contacts.html");
+            break;
 
-    case 'personal':
-        $entries = get_personal($xivo);
-        $tpl->assign("entries", $entries);
-        $tpl->display("tpl/contacts.html");
-        break;
-
-    default:
-        $entries = get_phonebook($db, $tab);
-        if (!empty($entries)) {
-          $tpl->assign("entries", $entries);
-        }
-        $tpl->display("tpl/contacts.html");
+        default:
+            $entries = get_phonebook($db, $tab);
+            if (!empty($entries)) {
+              $tpl->assign("entries", $entries);
+            }
+            $tpl->display("tpl/contacts.html");
     }
+
+    switch($_GET['action']) {
+        case 'logout':
+            $xivo->xivo_logout();
+            break;
+    }
+
 
 } else {
 
