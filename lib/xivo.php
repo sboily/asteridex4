@@ -16,6 +16,8 @@ class XiVO {
         $this->xivo_api_user = $xivo_api_user;
         $this->xivo_api_pwd = $xivo_api_pwd;
         $this->xivo_backend_user = "xivo_user";
+        $this->xivo_session = $_COOKIE['asteridex']['session'];
+        $this->xivo_uuid = $_COOKIE['asteridex']['uuid'];
     }
 
     private function _connect($port, $version, $token=NULL, $xivo_api_user=NULL, $xivo_api_pwd=NULL) {
@@ -49,8 +51,8 @@ class XiVO {
     }
 
     private function _get_line() {
-        $connect = $this->_connect(9486, "1.1", $_COOKIE['asteridex']['session']);
-        $lines = $connect->get("users/".$_COOKIE['asteridex']['uuid']."/lines");
+        $connect = $this->_connect(9486, "1.1", $this->session);
+        $lines = $connect->get("users/$this->xivo_uuid/lines");
 
         $result = json_decode($lines->response);
 
@@ -91,12 +93,9 @@ class XiVO {
     }
 
     public function xivo_logout() {
-        $token = $_COOKIE['asteridex']['session'];
-
         $connect = $this->_connect(9497, "0.1");
-        $connect->delete("token/$token");
+        $connect->delete("token/$this->xivo_session");
 
-        unset($_COOKIE['asteridex']['session']);
         setcookie("asteridex[session]", "", time() - 3600);
         setcookie("asteridex[uuid]", "", time() - 3600);
 
@@ -105,8 +104,8 @@ class XiVO {
 
     public function get_displayname() {
 
-        $connect = $this->_connect(9486, "1.1", $_COOKIE['asteridex']['session']);
-        $user = $connect->get("users/".$_COOKIE['asteridex']['uuid']);
+        $connect = $this->_connect(9486, "1.1", $this->xivo_session);
+        $user = $connect->get("users/$this->xivo_uuid");
 
         if ($user->info->http_code == 200) {
             $info['firstname'] = json_decode($user->response)->firstname;
@@ -121,19 +120,18 @@ class XiVO {
 
     public function do_call($extension) {
 
-        $user = $_COOKIE['asteridex']['uuid'];
-
         $call = json_encode(['destination' => ['extension' => $extension,
                                                'context' => $this->_get_context(),
                                                'priority' => 0],
-                             'source' => ['user' => $user]]);
+                             'source' => ['user' => $this->xivo_uuid]
+                            ]);
 
-        $connect = $this->_connect(9500, "1.0", $_COOKIE['asteridex']['session']);
+        $connect = $this->_connect(9500, "1.0", $this->xivo_session);
         $connect->post("calls", $call, ['Content-Type' => 'application/json']);
     }
 
     public function get_personal() {
-        $connect = $this->_connect(9489, "0.1", $_COOKIE['asteridex']['session']);
+        $connect = $this->_connect(9489, "0.1", $this->xivo_session);
         $personal = $connect->get("personal");
 
         $result = json_decode($personal->response);
@@ -152,7 +150,7 @@ class XiVO {
                                 'number' => $contact['number']
                                ]);
 
-        $connect = $this->_connect(9489, "0.1", $_COOKIE['asteridex']['session']);
+        $connect = $this->_connect(9489, "0.1", $this->xivo_session);
         $personal = $connect->post("personal", $contact, ['Content-Type' => 'application/json']);
     }
 }
