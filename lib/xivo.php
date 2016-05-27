@@ -207,4 +207,30 @@ function get_personal($xivo) {
     return $entries;
 }
 
+function do_call($tpl, $xivo) {
+    $exten = urlencode($_REQUEST['exten']);
+    $exten = str_replace( chr(13), "", $exten );
+    $exten = str_replace( chr(10), "", $exten );
+    $exten = str_replace( ">", "", $exten );
+    $exten = str_replace( "<", "", $exten );
+
+    $pos = false ;
+    if (strlen($exten)>100) :
+        $pos=true ;
+    endif ;
+
+    if ($pos===false) {
+        $tpl->assign("duration", 4000);
+        $tpl->assign("exten", $exten);
+        $tpl->assign("pos", true);
+
+        $xivo->do_call($exten);
+    } else {
+        $tpl->assign("duration", 1000);
+        $tpl->assign("pos", false);
+    }
+
+    $tpl->display("tpl/call.html");
+}
+
 ?>

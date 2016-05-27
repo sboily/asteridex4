@@ -11,6 +11,9 @@ include_once("config/config.inc.php");
 include_once("lib/xivo.php");
 
 $xivo = new XiVO($xivo_host);
+
+$xivo->xivo_api_user = $xivo_api_user;
+$xivo->xivo_api_pwd = $xivo_api_pwd;
 $xivo->xivo_backend_user = $xivo_backend_user;
 
 $tpl = new Smarty();
@@ -45,6 +48,10 @@ if (!empty($session)) {
                 if (!empty($id)) {
                     $xivo->delete_personal($id);
                 }
+            break;
+        case 'docall':
+                do_call($tpl, $xivo);
+                die();
             break;
     }
 
