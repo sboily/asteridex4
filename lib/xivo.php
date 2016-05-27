@@ -37,7 +37,7 @@ class XiVO {
     }
 
     private function _get_uuid() {
-        $connect = $this->_connect(9497, "0.1", NULL, $xivo_api_user, $xivo_api_pwd);
+        $connect = $this->_connect(9497, "0.1", $this->xivo_session);
         $uuid = $connect->get("token/$this->xivo_session");
 
         if ($uuid->info->http_code == 200) {
@@ -62,7 +62,7 @@ class XiVO {
     }
 
     private function _get_line() {
-        $connect = $this->_connect(9486, "1.1", $this->session);
+        $connect = $this->_connect(9486, "1.1", $this->xivo_session);
         $lines = $connect->get("users/$this->xivo_uuid/lines");
 
         $result = json_decode($lines->response);
