@@ -1,0 +1,14 @@
+{extends file="tpl/contacts.html"}
+{block name=addcontact}
+<div class="personal">
+  <p>Add personal contact</p>
+  <div class="form">
+    <form method="post" action="index.php?tab=personal">
+      <input type="text" name="firstname" placeholder="firstname"/>
+      <input type="text" name="lastname" placeholder="lastname"/>
+      <input type="text" name="number" placeholder="number"/>
+      <button>Add</button>
+    </form>
+  </div>
+</div>
+{/block}

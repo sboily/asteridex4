@@ -17,15 +17,15 @@ class XiVO {
         $this->xivo_api_pwd = $xivo_api_pwd;
         $this->xivo_backend_user = "xivo_user";
         $this->xivo_session = $_COOKIE['asteridex']['session'];
-        $this->xivo_uuid = $_COOKIE['asteridex']['uuid'];
+        $this->xivo_uuid = $this->_get_uuid();
     }
 
     private function _connect($port, $version, $token=NULL, $xivo_api_user=NULL, $xivo_api_pwd=NULL) {
         $connect = new RestClient([
             'base_url' => "https://$this->xivo_host:$port/$version",
             'headers' => ['X-Auth-Token' => $token],
-            'curl_options' => [CURLOPT_SSL_VERIFYPEER => FALSE,
-                               CURLOPT_SSL_VERIFYHOST => FALSE,
+            'curl_options' => [CURLOPT_SSL_VERIFYPEER => false,
+                               CURLOPT_SSL_VERIFYHOST => false,
                                CURLOPT_ENCODING => 'application/json',
                               ],
             'decoders' => ['json'],
@@ -34,6 +34,17 @@ class XiVO {
         ]);
 
         return $connect;
+    }
+
+    private function _get_uuid() {
+        $connect = $this->_connect(9497, "0.1", NULL, $xivo_api_user, $xivo_api_pwd);
+        $uuid = $connect->get("token/$this->xivo_session");
+
+        if ($uuid->info->http_code == 200) {
+            return json_decode($uuid->response)->data->xivo_user_uuid; 
+        }
+
+        return false;
     }
 
     private function _get_context() {
@@ -47,7 +58,7 @@ class XiVO {
             return json_decode($line->response)->context;
         }
 
-        return FALSE;
+        return false;
     }
 
     private function _get_line() {
@@ -64,7 +75,7 @@ class XiVO {
             }
         }
 
-        return FALSE;
+        return false;
     }
 
     private function _get_token($xivo_api_user, $xivo_api_pwd, $backend) {
@@ -82,12 +93,11 @@ class XiVO {
             return $info;
         }
 
-        return FALSE;
+        return false;
     }
 
     public function xivo_login($login, $password) {
         $info = $this->_get_token($login, $password, $this->xivo_backend_user);
-        setcookie("asteridex[uuid]", $info['uuid'], time() + 3600);
 
         return $info['token'];
     }
@@ -141,10 +151,14 @@ class XiVO {
             return $result->items;
         }
 
-        return FALSE;
+        return false;
     }
 
     public function add_personal($contact) {
+        if (empty($contact['firstname']) or empty($contact['number'])) {
+            print "Error to add personal contact!";
+            return false;
+        }
         $contact = json_encode(['firstname' => $contact['firstname'],
                                 'lastname' => $contact['lastname'],
                                 'number' => $contact['number']

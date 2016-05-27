@@ -36,11 +36,20 @@ if (!empty($session)) {
     $tpl->assign("tab", $tab);
     $tpl->assign("uuid", $session);
 
+    switch($_GET['action']) {
+        case 'logout':
+            $xivo->xivo_logout();
+            break;
+    }
+
     switch($tab) {
         case 'personal':
+            if (!empty($_POST)) {
+                $xivo->add_personal($_POST);
+            }
             $entries = get_personal($xivo);
             $tpl->assign("entries", $entries);
-            $tpl->display("tpl/contacts.html");
+            $tpl->display("tpl/add_contacts.html");
             break;
 
         default:
@@ -49,12 +58,6 @@ if (!empty($session)) {
               $tpl->assign("entries", $entries);
             }
             $tpl->display("tpl/contacts.html");
-    }
-
-    switch($_GET['action']) {
-        case 'logout':
-            $xivo->xivo_logout();
-            break;
     }
 
 
