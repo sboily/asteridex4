@@ -63,7 +63,7 @@ if (!empty($session)) {
             $entries = get_personal($xivo);
             $tpl->assign("entries", $entries);
             $tpl->assign("personal", true);
-            $tpl->display("tpl/add_contacts.html");
+            $tpl->display("tpl/personal.html");
             break;
 
         default:
