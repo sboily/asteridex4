@@ -11,16 +11,14 @@ include_once("restclient.php");
 
 class XiVO {
 
-    function __construct($xivo_host, $xivo_api_user=NULL, $xivo_api_pwd=NULL) {
+    function __construct($xivo_host) {
         $this->xivo_host = $xivo_host;
-        $this->xivo_api_user = $xivo_api_user;
-        $this->xivo_api_pwd = $xivo_api_pwd;
         $this->xivo_backend_user = "xivo_user";
         $this->xivo_session = $_COOKIE['asteridex']['session'];
         $this->xivo_uuid = $this->_get_uuid();
     }
 
-    private function _connect($port, $version, $token=NULL, $xivo_api_user=NULL, $xivo_api_pwd=NULL) {
+    private function _connect($port, $version, $token=NULL, $login=NULL, $password=NULL) {
         $connect = new RestClient([
             'base_url' => "https://$this->xivo_host:$port/$version",
             'headers' => ['X-Auth-Token' => $token],
@@ -29,14 +27,19 @@ class XiVO {
                                CURLOPT_ENCODING => 'application/json',
                               ],
             'decoders' => ['json'],
-            'username' => $xivo_api_user,
-            'password' => $xivo_api_pwd
+            'username' => $login,
+            'password' => $password
+
         ]);
 
         return $connect;
     }
 
     private function _get_uuid() {
+        if (empty($this->xivo_session)) {
+            return false;
+        }
+
         $connect = $this->_connect(9497, "0.1", $this->xivo_session);
         $uuid = $connect->get("token/$this->xivo_session");
 
@@ -47,43 +50,12 @@ class XiVO {
         return false;
     }
 
-    private function _get_context() {
-        $line_id = $this->_get_line();
-
-        $info = $this->_get_token($this->xivo_api_user, $this->xivo_api_pwd, "xivo_service");
-        $connect = $this->_connect(9486, "1.1", $info['token']);
-        $line = $connect->get("lines/$line_id");
-
-        if ($line->info->http_code == 200) {
-            return json_decode($line->response)->context;
-        }
-
-        return false;
-    }
-
-    private function _get_line() {
-        $connect = $this->_connect(9486, "1.1", $this->xivo_session);
-        $lines = $connect->get("users/$this->xivo_uuid/lines");
-
-        $result = json_decode($lines->response);
-
-        if ($lines->info->http_code == 200) {
-            for ($i = 0; $i<count($result); $i++) {
-                if ($result->items[$i]->main_line) {
-                    return $result->items[$i]->line_id;
-                }
-            }
-        }
-
-        return false;
-    }
-
-    private function _get_token($xivo_api_user, $xivo_api_pwd, $backend) {
+    private function _get_token($login, $password, $backend) {
         $auth_info = json_encode(['backend' => $backend,
                                   'expiration' => 3600
                                  ]);
 
-        $connect = $this->_connect(9497, "0.1", NULL, $xivo_api_user, $xivo_api_pwd);
+        $connect = $this->_connect(9497, "0.1", NULL, $login, $password);
         $t = $connect->post("token", $auth_info, ['Content-Type' => 'application/json']);
 
         if ($t->info->http_code == 200) {
@@ -130,14 +102,10 @@ class XiVO {
 
     public function do_call($extension) {
 
-        $call = json_encode(['destination' => ['extension' => $extension,
-                                               'context' => $this->_get_context(),
-                                               'priority' => 0],
-                             'source' => ['user' => $this->xivo_uuid]
-                            ]);
+        $call = json_encode(['extension' => $extension]);
 
         $connect = $this->_connect(9500, "1.0", $this->xivo_session);
-        $connect->post("calls", $call, ['Content-Type' => 'application/json']);
+        $connect->post("users/me/calls", $call, ['Content-Type' => 'application/json']);
     }
 
     public function get_personal() {
