@@ -7,7 +7,7 @@ Installation
 
 Go on your xivo:
 
-    wget https:/github.com/sboily/asteridex4/archive/0.1.5.tar.gz
+    wget https:/github.com/sboily/asteridex4/archive/0.1.6.tar.gz
     mkdir -p /usr/share/xivo-web-interface/www/asteridex4/templates_c
     tar xfvz 0.1.5.tar.gz --strip-components=1 -C /usr/share/xivo-web-interface/www/asteridex4/
     chown www-data /usr/share/xivo-web-interface/www/asteridex4/templates_c
